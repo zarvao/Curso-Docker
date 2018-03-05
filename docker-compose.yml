@@ -1,0 +1,35 @@
+version: '2'
+
+services:
+  db:
+    image: mysql:5.5
+    volumes:
+      - dbdata:/var/lib/mysql
+      - ./data.sql:/docker-entrypoint-initdb.d/data.sql
+    restart: always
+    container_name: dbcontainer
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: db_data
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+
+  appbd:
+    depends_on:
+      - db
+    image: dockerzar/appbd
+    ports:
+      - "8080:8080"
+    restart: always
+    volumes:
+      - datos:/usr/local/tomcat/webapps/
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: admin
+      WORDPRESS_DB_PASSWORD: admin
+
+volumes:
+  dbdata:
+  datos:
+  
+
